@@ -41,5 +41,23 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>HERECredentials</key>
+	    <dict>
+	        <key>AccesKeyId</key>
+	        <string>qT3YojQzo9uwL-kqIaSmsQ</string>
+	        <key>AccesKeySecret</key>
+	        <string>gNCdqq0couv5jDzI7LF49zGDJJGQKg4nJQpYoFCtL-Lu-z8Rb3YmMnA4SmlXdbF3bP3dB4HQhUo-X1aYNyxU2A</string>
+	    </dict>
+	<key>UIRequiredDeviceCapabilities</key>
+    <array>
+       <string>location-services</string>
+       <string>gps</string>
+    </array>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+       <string>Esta aplicación necesita acceder a tu ubicación actual para mostrarla en el mapa.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+       <string>Esta aplicación necesita acceder a tu ubicación actual para mostrarla en el mapa.</string>
+    <key>NSMotionUsageDescription</key>
+       <string>La detección de movimiento es necesaria para determinar ubicaciones más precisas, cuando no se encuentra ni se utiliza la señal GPS.</string>
 </dict>
 </plist>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:newsapp/pages/GoogleMapView.dart';
 import 'package:newsapp/pages/Home.dart';
 
 class Routes {
@@ -8,6 +9,8 @@ class Routes {
         return MaterialPageRoute(builder: (_) => Home());
       case "home":
         return MaterialPageRoute(builder: (_) => Home());
+      case "googlemap":
+        return MaterialPageRoute(builder: (_) => GoogleMapView());
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(

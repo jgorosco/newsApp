@@ -1,89 +1,55 @@
-import 'dart:async';
-import 'dart:convert';
-
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:newsapp/pages/Home.dart';
 
-Future<Album> fetchAlbum() async {
-  final response = await http
-      .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1'));
+import 'Routes.dart';
 
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    return Album.fromJson(jsonDecode(response.body));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load album');
-  }
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
 }
 
-class Album {
-  final int userId;
-  final int id;
-  final String title;
-
-  Album({
-    required this.userId,
-    required this.id,
-    required this.title,
-  });
-
-  factory Album.fromJson(Map<String, dynamic> json) {
-    return Album(
-      userId: json['userId'],
-      id: json['id'],
-      title: json['title'],
-    );
-  }
-}
-
-void main() => runApp(const MyApp());
-
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  late Future<Album> futureAlbum;
-
-  @override
-  void initState() {
-    super.initState();
-    futureAlbum = fetchAlbum();
-  }
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fetch Data Example',
+      debugShowCheckedModeBanner: false,
+      builder: EasyLoading.init(builder: BotToastInit()),
+      //1. call BotToastInit
+      navigatorObservers: [BotToastNavigatorObserver()],
+      title: 'News App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        // This is the theme of your application.
+        //
+        // Try running your application with "flutter run". You'll see the
+        // application has a blue toolbar. Then, without quitting the app, try
+        // changing the primarySwatch below to Colors.green and then invoke
+        // "hot reload" (press "r" in the console where you ran "flutter run",
+        // or simply save your changes to "hot reload" in a Flutter IDE).
+        // Notice that the counter didn't reset back to zero; the application
+        // is not restarted.
+        primarySwatch: MaterialColor(0xFF311B92, colorPalette),
+        accentColor: Color(0xFF311B92),
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Fetch Data Example'),
-        ),
-        body: Center(
-          child: FutureBuilder<Album>(
-            future: futureAlbum,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(snapshot.data!.title);
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-
-              // By default, show a loading spinner.
-              return const CircularProgressIndicator();
-            },
-          ),
-        ),
-      ),
+      home: Home(),
+      initialRoute: 'home',
+      onGenerateRoute: Routes.generateRoute,
     );
   }
 }
+
+Map<int, Color> colorPalette = {
+  50: Color(0xFFEDE7F6),
+  100: Color(0xFFD1C4E9),
+  200: Color(0xFFB39DDB),
+  300: Color(0xFF9575CD),
+  400: Color(0xFF7E57C2),
+  500: Color(0xFF6E57C2),
+  600: Color(0xFF5E35B1),
+  700: Color(0xFF512DA8),
+  800: Color(0xFF4527A0),
+  900: Color(0xFF311B92),
+};
