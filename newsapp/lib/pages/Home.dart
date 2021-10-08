@@ -15,11 +15,24 @@ import 'package:newsapp/util/network_utils.dart';
 class Home extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
+    configLoading();
     return HomeState();
   }
 }
 
 List<Marker> markers = [];
+
+void configLoading() {
+  EasyLoading.instance
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..textColor = Colors.yellow
+    ..maskColor = Colors.blue.withOpacity(0.5)
+    ..userInteractions = false
+    ..dismissOnTap = false;
+}
 
 class HomeState extends State<Home> {
   final TextEditingController _controllerName = TextEditingController();
@@ -77,8 +90,10 @@ class HomeState extends State<Home> {
           const DrawerHeader(
             decoration: BoxDecoration(
               color: Color(0xFF311B92),
+              image: DecorationImage(image:AssetImage("assets/bg/news.jpg"),
+                fit: BoxFit.cover),
             ),
-            child: Text('Menú'),
+            child: Text(''),
           ),
           ListTile(
             title: const Text('Reportes de Robos'),
@@ -113,8 +128,8 @@ class HomeState extends State<Home> {
                   print("No data");
                   return Text('${snapshot.error}');
                 }
-                //return  a circular progress indicator.
                 return new CircularProgressIndicator();
+                //return  a circular progress indicator.
               },
             ),
           ),
@@ -173,6 +188,7 @@ class HomeState extends State<Home> {
               IconButton(
                 //actualizar la vista de la barra inferior de la aplicación cada vez que se hace clic en un elemento
                 onPressed: () {
+                  EasyLoading.showInfo("Cargando...");
                   updateTabSelection(0, false);
                 },
                 iconSize: 40.0,
@@ -186,6 +202,7 @@ class HomeState extends State<Home> {
               ),
               IconButton(
                 onPressed: () {
+                  EasyLoading.showInfo("Cargando...");
                   updateTabSelection(1, true);
                 },
                 iconSize: 40.0,
@@ -219,7 +236,7 @@ class HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TextFormField(
-              controller: _controllerName,
+              controller: _controllerName ,
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Nombre y Apellidos'),
@@ -333,8 +350,7 @@ class HomeState extends State<Home> {
                 items: <String>[
                   'Asalto en la calle',
                   'Robo de vehículo',
-                  'Robo de Motocicleta',
-                  'Otro'
+                  'Robo de Motocicleta'
                 ].map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -386,9 +402,11 @@ class HomeState extends State<Home> {
                       '', val).then((report) {
                         EasyLoading.dismiss();
                         if(report!.isFake==0){
-                          BotToast.showText(text: "Su reporte se ha creado Correctamente");
+                          BotToast.showText(text: "Su reporte se ha creado Correctamente", duration: Duration(seconds: 10));
+                        }else if(report.isFake==1){
+                          BotToast.showText(text: "Su reporte parece ser FALSO.", duration: Duration(seconds: 10));
                         }else{
-                          BotToast.showText(text: "Su reporte parece ser FALSO.");
+                          BotToast.showText(text: "Al parecer el reporte no está en Español.", duration: Duration(seconds: 10));
                         }
                       })
                   .onError((error, stackTrace) {
@@ -451,7 +469,7 @@ class CustomListView extends StatelessWidget {
                     '${reporte.titulo}',
                     style: TextStyle(
                       fontSize: 22.0,
-                      color: Colors.redAccent,
+                      color: reporte.isFake == 0 ? Colors.green : Colors.red,
                     ),
                   ),
                 ),
@@ -481,6 +499,7 @@ class CustomListView extends StatelessWidget {
         ),
       ),
     );
+    EasyLoading.dismiss();
   }
 
   void _onTapItem(BuildContext context, Reporte reporte) {

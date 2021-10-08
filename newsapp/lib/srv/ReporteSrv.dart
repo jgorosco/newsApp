@@ -12,6 +12,9 @@ List<Reporte> parseReportes(String responseBody) {
 }
 
 class ReporteSrv {
+  final String urlDesarrollo = 'http://192.168.0.8:5000';
+  final String urlHeroku = 'https://aqueous-harbor-64602.herokuapp.com';
+
   NetworkUtils? net;
   List<Reporte> reportes = <Reporte>[];
 
@@ -23,9 +26,9 @@ class ReporteSrv {
     late http.Response response;
     try {
       if(isFake){
-        response = await http.get(Uri.parse('https://aqueous-harbor-64602.herokuapp.com/api/noticias/fakes'));
+        response = await http.get(Uri.parse(urlHeroku+'/api/noticias/fakes'));
       }else{
-        response = await http.get(Uri.parse('https://aqueous-harbor-64602.herokuapp.com/api/noticias/reales'));
+        response = await http.get(Uri.parse(urlHeroku+'/api/noticias/reales'));
       }
       return compute(parseReportes, response.body);
     } catch (e) {
@@ -36,16 +39,16 @@ class ReporteSrv {
   Future<Reporte?> createReporte(String nombres, int edad, String coordenadas,
       String noticia, String sector, String titulo) async {
     final response = await http.post(
-      Uri.parse('https://aqueous-harbor-64602.herokuapp.com/api/noticia'),
+      Uri.parse(urlHeroku+'/api/noticia'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
         'nombre': nombres,
         'edad' : edad,
-        'sector': sector,
         'coordenadas': coordenadas,
         'titulo': titulo,
+        'sector': sector,
         'noticia': noticia
       }),
     );
